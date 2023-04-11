@@ -10,7 +10,5 @@ uniform mat4 u_mvp_mat;
 void main() {
     gl_Position = u_mvp_mat * vec4(in_position, 1.0);
 
-    vec2 tmp   = in_uv;
-    tmp.y      = -tmp.y;
-    f_texcoord = tmp;
+    f_texcoord = in_uv;
 }

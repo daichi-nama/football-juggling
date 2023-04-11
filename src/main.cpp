@@ -39,8 +39,8 @@ static const glm::vec3 CELL_POS[9] = {
     glm::vec3(-2.0f, 0.0f, 2.0f),  glm::vec3(0.0f, 0.0f, 2.0f),  glm::vec3(2.0f, 0.0f, 2.0f),
 };
 static const glm::vec3 UNIT_RECTANGLE_POS[4]
-    = {glm::vec3(-1.0f, 0.0f, 1.0f), glm::vec3(-1.0f, 0.0f, -1.0f), glm::vec3(1.0f, 0.0f, -1.0f),
-       glm::vec3(1.0f, 0.0f, 1.0f)};
+    = {glm::vec3(-1.0f, 0.0f, -1.0f), glm::vec3(-1.0f, 0.0f, 1.0f), glm::vec3(1.0f, 0.0f, 1.0f),
+       glm::vec3(1.0f, 0.0f, -1.0f)};
 static const glm::vec2 UNIT_RECTANGLE_UV[4]
     = {glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 1.0f), glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 0.0f)};
 static const unsigned int UNIT_RECTANGLE_INDEX[2][3] = {{0, 1, 2}, {3, 2, 0}};
