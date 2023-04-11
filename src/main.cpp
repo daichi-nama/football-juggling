@@ -658,9 +658,10 @@ class Ball : public RenderObject {
     }
 
    private:
-    // Matrix to move the center of the ball to the origin
+    // Matrix to adjust the scale and position of the ball
     glm::mat4 calc_adj_mat() const {
         glm::mat4 adj_mat = glm::mat4(1.0f);
+        adj_mat           = glm::rotate(adj_mat, glm::radians(20.0f), glm::vec3(0.0f, 1.0f, 0.5f));
         adj_mat           = glm::scale(adj_mat, glm::vec3(m_scale));
         adj_mat           = glm::translate(adj_mat, -m_to_center);
         return adj_mat;
