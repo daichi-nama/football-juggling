@@ -108,7 +108,7 @@ class RenderObject {
         GLuint shader_id = glCreateShader(type);
 
         std::ifstream reader;
-        size_t codeSize;
+        size_t code_size;
         std::string code;
 
         reader.open(filename.c_str(), std::ios::in);
@@ -118,19 +118,19 @@ class RenderObject {
         }
 
         reader.seekg(0, std::ios::end);
-        codeSize = reader.tellg();
-        code.resize(codeSize);
+        code_size = reader.tellg();
+        code.resize(code_size);
         reader.seekg(0);
-        reader.read(&code[0], codeSize);
+        reader.read(&code[0], code_size);
         reader.close();
 
-        const char* codeChars = code.c_str();
-        glShaderSource(shader_id, 1, &codeChars, NULL);
+        const char* code_chars = code.c_str();
+        glShaderSource(shader_id, 1, &code_chars, NULL);
         glCompileShader(shader_id);
 
-        GLint compileStatus;
-        glGetShaderiv(shader_id, GL_COMPILE_STATUS, &compileStatus);
-        if (compileStatus == GL_FALSE) {
+        GLint compile_status;
+        glGetShaderiv(shader_id, GL_COMPILE_STATUS, &compile_status);
+        if (compile_status == GL_FALSE) {
             fprintf(stderr, "Failed to compile a shader!\n");
 
             GLint log_length;
@@ -160,9 +160,9 @@ class RenderObject {
         glAttachShader(m_program_id, frag_shader_id);
         glLinkProgram(m_program_id);
 
-        GLint linkState;
-        glGetProgramiv(m_program_id, GL_LINK_STATUS, &linkState);
-        if (linkState == GL_FALSE) {
+        GLint link_state;
+        glGetProgramiv(m_program_id, GL_LINK_STATUS, &link_state);
+        if (link_state == GL_FALSE) {
             fprintf(stderr, "Failed to link shaders!\n");
 
             GLint log_length;
