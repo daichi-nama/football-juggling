@@ -599,27 +599,6 @@ class Ball : public RenderObject {
         m_rev_angular_vel = 2.25f;
     }
 
-    static void calc_bounds(glm::vec3& min_bound, glm::vec3& max_bound,
-                            const std::vector<Vertex3>& vertices) {
-        float large_val = 100000.0f;
-        min_bound       = glm::vec3(+large_val);
-        max_bound       = glm::vec3(-large_val);
-        for (const auto& v : vertices) {
-            for (int i = 0; i < 3; ++i) {
-                min_bound[i] = std::min(min_bound[i], v.position[i]);
-                max_bound[i] = std::max(max_bound[i], v.position[i]);
-            }
-        }
-    }
-
-    static float calc_radius(const glm::vec3& min_bound, const glm::vec3& max_bound) {
-        return (max_bound.x - min_bound.x) * 0.5f;
-    }
-
-    static glm::vec3 calc_center(const glm::vec3& min_bound, const glm::vec3& max_bound) {
-        return (min_bound + max_bound) * 0.5f;
-    }
-
     void init() {
         std::vector<Vertex3> vertices;
         std::vector<unsigned int> indices;
@@ -683,7 +662,28 @@ class Ball : public RenderObject {
     }
 
    private:
-    int get_random_next_pos_idx(int last_pos_idx) const {
+    static void calc_bounds(glm::vec3& min_bound, glm::vec3& max_bound,
+                            const std::vector<Vertex3>& vertices) {
+        float large_val = 100000.0f;
+        min_bound       = glm::vec3(+large_val);
+        max_bound       = glm::vec3(-large_val);
+        for (const auto& v : vertices) {
+            for (int i = 0; i < 3; ++i) {
+                min_bound[i] = std::min(min_bound[i], v.position[i]);
+                max_bound[i] = std::max(max_bound[i], v.position[i]);
+            }
+        }
+    }
+
+    static float calc_radius(const glm::vec3& min_bound, const glm::vec3& max_bound) {
+        return (max_bound.x - min_bound.x) * 0.5f;
+    }
+
+    static glm::vec3 calc_center(const glm::vec3& min_bound, const glm::vec3& max_bound) {
+        return (min_bound + max_bound) * 0.5f;
+    }
+
+    static int get_random_next_pos_idx(int last_pos_idx) {
         int result;
         while (1) {
             result = rand() % 9;
@@ -693,7 +693,7 @@ class Ball : public RenderObject {
         }
     }
 
-    float get_random_rev_angular_vel() const {
+    static float get_random_rev_angular_vel() {
         const int num = rand();
         switch (num % 4) {
             case 0:
@@ -715,7 +715,7 @@ class Ball : public RenderObject {
         }
     }
 
-    float get_random_rot_angular_vel() const {
+    static float get_random_rot_angular_vel() {
         const int num = rand();
         switch (num % 4) {
             case 0:
@@ -737,7 +737,7 @@ class Ball : public RenderObject {
         }
     }
 
-    glm::vec3 get_pos_from_idx(int idx) const {
+    static glm::vec3 get_pos_from_idx(int idx) {
         return CELL_POS[idx];
     }
 
