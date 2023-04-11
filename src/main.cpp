@@ -613,13 +613,10 @@ class Ball : public RenderObject {
     }
 
     void draw_before_starting() {
-        glm::mat4 trans_mat, adj_mat;
-        trans_mat = adj_mat = glm::mat4(1.0f);
-        trans_mat           = glm::translate(trans_mat, glm::vec3(0.0f, m_falling_pos, 0.0f));
-
-        // Move the center of the ball to the origin
-        adj_mat = glm::scale(adj_mat, glm::vec3(m_scale));
-        adj_mat = glm::translate(adj_mat, -m_to_center);
+        glm::mat4 trans_mat;
+        trans_mat         = glm::mat4(1.0f);
+        trans_mat         = glm::translate(trans_mat, glm::vec3(0.0f, m_falling_pos, 0.0f));
+        glm::mat4 adj_mat = calc_adj_mat();
 
         glm::mat4 mv_mat    = g_view_mat * trans_mat * adj_mat;
         glm::mat4 mvp_mat   = g_proj_mat * g_view_mat * trans_mat * adj_mat;
@@ -632,14 +629,13 @@ class Ball : public RenderObject {
     void draw_during_game() {
         glm::vec3 last_pos  = get_pos_from_idx(m_last_pos_idx);
         glm::mat4 model_mat = glm::mat4(1.0f);
-        model_mat           = glm::translate(model_mat, m_rotation_center);
-        model_mat           = glm::rotate(model_mat, glm::radians(m_rev_angle), m_rotation_axis);
-        model_mat           = glm::translate(model_mat, last_pos - m_rotation_center);
-        model_mat           = glm::rotate(model_mat, glm::radians(-m_rev_angle), m_rotation_axis);
+
+        model_mat = glm::translate(model_mat, m_rotation_center);
+        model_mat = glm::rotate(model_mat, glm::radians(m_rev_angle), m_rotation_axis);
+        model_mat = glm::translate(model_mat, last_pos - m_rotation_center);
+        model_mat = glm::rotate(model_mat, glm::radians(-m_rev_angle), m_rotation_axis);
         model_mat = glm::rotate(model_mat, glm::radians(m_rot_angle), glm::vec3(1.0f, 0.0f, 0.0f));
-        // Move the center of the ball to the origin
-        model_mat = glm::scale(model_mat, glm::vec3(m_scale));
-        model_mat = glm::translate(model_mat, -m_to_center);
+        model_mat = model_mat * calc_adj_mat();
 
         glm::mat4 mv_mat    = g_view_mat * model_mat;
         glm::mat4 mvp_mat   = g_proj_mat * g_view_mat * model_mat;
@@ -662,6 +658,14 @@ class Ball : public RenderObject {
     }
 
    private:
+    // Matrix to move the center of the ball to the origin
+    glm::mat4 calc_adj_mat() const {
+        glm::mat4 adj_mat = glm::mat4(1.0f);
+        adj_mat           = glm::scale(adj_mat, glm::vec3(m_scale));
+        adj_mat           = glm::translate(adj_mat, -m_to_center);
+        return adj_mat;
+    }
+
     static void calc_bounds(glm::vec3& min_bound, glm::vec3& max_bound,
                             const std::vector<Vertex3>& vertices) {
         float large_val = 100000.0f;
