@@ -586,6 +586,7 @@ class Ball : public RenderObject {
         m_next_pos_idx    = get_random_next_pos_idx(m_last_pos_idx);
         m_rev_angular_vel = get_random_rev_angular_vel();
         m_rot_angular_vel = get_random_rot_angular_vel();
+        calc_rotation();
     }
 
     void reset() {
@@ -650,17 +651,12 @@ class Ball : public RenderObject {
     }
 
     void draw_during_game() {
-        glm::vec3 next_pos        = get_pos_from_idx(m_next_pos_idx);
-        glm::vec3 last_pos        = get_pos_from_idx(m_last_pos_idx);
-        glm::vec3 direction       = next_pos - last_pos;
-        glm::vec3 rotation_axis   = glm::cross(direction, glm::vec3(0.0f, -1.0f, 0.0f));
-        glm::vec3 rotation_center = (last_pos + next_pos) * 0.5f;
-
+        glm::vec3 last_pos  = get_pos_from_idx(m_last_pos_idx);
         glm::mat4 model_mat = glm::mat4(1.0f);
-        model_mat           = glm::translate(model_mat, rotation_center);
-        model_mat           = glm::rotate(model_mat, glm::radians(m_rev_angle), rotation_axis);
-        model_mat           = glm::translate(model_mat, last_pos - rotation_center);
-        model_mat           = glm::rotate(model_mat, glm::radians(-m_rev_angle), rotation_axis);
+        model_mat           = glm::translate(model_mat, m_rotation_center);
+        model_mat           = glm::rotate(model_mat, glm::radians(m_rev_angle), m_rotation_axis);
+        model_mat           = glm::translate(model_mat, last_pos - m_rotation_center);
+        model_mat           = glm::rotate(model_mat, glm::radians(-m_rev_angle), m_rotation_axis);
         model_mat = glm::rotate(model_mat, glm::radians(m_rot_angle), glm::vec3(1.0f, 0.0f, 0.0f));
         // Move the center of the ball to the origin
         model_mat = glm::scale(model_mat, glm::vec3(m_scale));
@@ -687,7 +683,7 @@ class Ball : public RenderObject {
     }
 
    private:
-    int get_random_next_pos_idx(int last_pos_idx) {
+    int get_random_next_pos_idx(int last_pos_idx) const {
         int result;
         while (1) {
             result = rand() % 9;
@@ -697,7 +693,7 @@ class Ball : public RenderObject {
         }
     }
 
-    float get_random_rev_angular_vel() {
+    float get_random_rev_angular_vel() const {
         const int num = rand();
         switch (num % 4) {
             case 0:
@@ -719,7 +715,7 @@ class Ball : public RenderObject {
         }
     }
 
-    float get_random_rot_angular_vel() {
+    float get_random_rot_angular_vel() const {
         const int num = rand();
         switch (num % 4) {
             case 0:
@@ -741,8 +737,16 @@ class Ball : public RenderObject {
         }
     }
 
-    glm::vec3 get_pos_from_idx(int idx) {
+    glm::vec3 get_pos_from_idx(int idx) const {
         return CELL_POS[idx];
+    }
+
+    void calc_rotation() {
+        glm::vec3 next_pos  = get_pos_from_idx(m_next_pos_idx);
+        glm::vec3 last_pos  = get_pos_from_idx(m_last_pos_idx);
+        glm::vec3 direction = next_pos - last_pos;
+        m_rotation_axis     = glm::cross(direction, glm::vec3(0.0f, -1.0f, 0.0f));
+        m_rotation_center   = (last_pos + next_pos) * 0.5f;
     }
 
    private:
@@ -758,6 +762,9 @@ class Ball : public RenderObject {
 
     glm::vec3 m_to_center;
     float m_scale;
+
+    glm::vec3 m_rotation_axis;
+    glm::vec3 m_rotation_center;
 };
 
 class GameManager {
