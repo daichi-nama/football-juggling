@@ -573,7 +573,7 @@ class Ball : public RenderObject {
     }
 
     bool is_fallen() const {
-        return m_phi >= 180.0f;
+        return m_rev_angle >= 180.0f;
     }
 
     int get_next_pos_idx() const {
@@ -582,7 +582,7 @@ class Ball : public RenderObject {
 
     void set_dest() {
         m_last_pos_idx    = m_next_pos_idx;
-        m_phi             = 0.0f;
+        m_rev_angle       = 0.0f;
         m_next_pos_idx    = get_random_next_pos_idx(m_last_pos_idx);
         m_rev_angular_vel = get_random_rev_angular_vel();
         m_rot_angular_vel = get_random_rot_angular_vel();
@@ -592,8 +592,8 @@ class Ball : public RenderObject {
         m_falling_pos     = INITIAL_POS;
         m_last_pos_idx    = 4;
         m_next_pos_idx    = 4;
-        m_theta           = 0.0f;
-        m_phi             = 0.0f;
+        m_rot_angle       = 0.0f;  // rotation angle
+        m_rev_angle       = 0.0f;  // revolution angle
         m_rot_angular_vel = 1.0f;
         m_rev_angular_vel = 2.25f;
     }
@@ -658,10 +658,10 @@ class Ball : public RenderObject {
 
         glm::mat4 model_mat = glm::mat4(1.0f);
         model_mat           = glm::translate(model_mat, rotation_center);
-        model_mat           = glm::rotate(model_mat, glm::radians(m_phi), rotation_axis);
+        model_mat           = glm::rotate(model_mat, glm::radians(m_rev_angle), rotation_axis);
         model_mat           = glm::translate(model_mat, last_pos - rotation_center);
-        model_mat           = glm::rotate(model_mat, glm::radians(-m_phi), rotation_axis);
-        model_mat = glm::rotate(model_mat, glm::radians(m_theta), glm::vec3(1.0f, 0.0f, 0.0f));
+        model_mat           = glm::rotate(model_mat, glm::radians(-m_rev_angle), rotation_axis);
+        model_mat = glm::rotate(model_mat, glm::radians(m_rot_angle), glm::vec3(1.0f, 0.0f, 0.0f));
         // Move the center of the ball to the origin
         model_mat = glm::scale(model_mat, glm::vec3(m_scale));
         model_mat = glm::translate(model_mat, -m_to_center);
@@ -679,11 +679,11 @@ class Ball : public RenderObject {
     }
 
     void update_juggle() {
-        m_theta += m_rot_angular_vel;
-        if (m_theta >= 360.0f) {
-            m_theta = 0.0f;
+        m_rot_angle += m_rot_angular_vel;
+        if (m_rot_angle >= 360.0f) {
+            m_rot_angle = 0.0f;
         }
-        m_phi += m_rev_angular_vel;
+        m_rev_angle += m_rev_angular_vel;
     }
 
    private:
@@ -751,8 +751,8 @@ class Ball : public RenderObject {
     int m_last_pos_idx;
     int m_next_pos_idx;
 
-    float m_theta;
-    float m_phi;
+    float m_rot_angle;
+    float m_rev_angle;
     float m_rot_angular_vel;
     float m_rev_angular_vel;
 
