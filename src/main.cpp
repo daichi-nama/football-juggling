@@ -864,7 +864,7 @@ void resize_gl(GLFWwindow* window, int width, int height) {
     g_proj_mat = glm::perspective(45.0f, (float)g_win_width / (float)g_win_height, 0.1f, 1000.0f);
 }
 
-void keyboardEvent(GLFWwindow* window, int key, int scancode, int action, int mods) {
+void keyboard_event(GLFWwindow* window, int key, int scancode, int action, int mods) {
     g_game.keyboard_event(window, key, scancode, action, mods);
 }
 
@@ -915,7 +915,7 @@ int main(int argc, char** argv) {
     }
 
     glfwMakeContextCurrent(window);
-    glfwSetKeyCallback(window, keyboardEvent);
+    glfwSetKeyCallback(window, keyboard_event);
 
     const int version = gladLoadGL(glfwGetProcAddress);
     if (version == 0) {
