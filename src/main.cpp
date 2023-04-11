@@ -592,8 +592,8 @@ class Ball : public RenderObject {
         m_falling_pos     = INITIAL_POS;
         m_last_pos_idx    = 4;
         m_next_pos_idx    = 4;
-        m_rot_angle       = 0.0f;  // rotation angle
-        m_rev_angle       = 0.0f;  // revolution angle
+        m_rot_angle       = 0.0f;
+        m_rev_angle       = 0.0f;
         m_rot_angular_vel = 1.0f;
         m_rev_angular_vel = 2.25f;
     }
@@ -751,8 +751,8 @@ class Ball : public RenderObject {
     int m_last_pos_idx;
     int m_next_pos_idx;
 
-    float m_rot_angle;
-    float m_rev_angle;
+    float m_rot_angle;  // rotation angle
+    float m_rev_angle;  // revolution angle
     float m_rot_angular_vel;
     float m_rev_angular_vel;
 
