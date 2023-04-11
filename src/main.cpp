@@ -471,7 +471,7 @@ class Grid : public RenderObject {
     }
 };
 
-enum class GameMode {
+enum class GameState {
     BEFORE_START,
     FALLING,
     JUGGLING,
@@ -775,7 +775,7 @@ class Ball : public RenderObject {
 class GameManager {
    public:
     GameManager()
-        : m_game_mode(GameMode::BEFORE_START), m_tile(WHITE), m_red_tile(RED), m_count(0) {}
+        : m_game_state(GameState::BEFORE_START), m_tile(WHITE), m_red_tile(RED), m_count(0) {}
 
     void init() {
         m_ball.init();
@@ -790,20 +790,20 @@ class GameManager {
         m_ground.draw();
         m_tile.draw();
 
-        if (m_game_mode == GameMode::BEFORE_START) {
+        if (m_game_state == GameState::BEFORE_START) {
             m_ball.draw_before_starting();
-        } else if (m_game_mode == GameMode::FALLING) {
+        } else if (m_game_state == GameState::FALLING) {
             m_ball.draw_before_starting();
             if (m_ball.get_falling_pos() < 0.0f) {
-                m_game_mode = GameMode::JUGGLING;
+                m_game_state = GameState::JUGGLING;
                 printf("%d\n", ++m_count);
                 m_ball.set_dest();
             }
             m_ball.update_fall();
-        } else if (m_game_mode == GameMode::JUGGLING) {
+        } else if (m_game_state == GameState::JUGGLING) {
             m_ball.draw_during_game();
             if (is_failure()) {
-                m_game_mode = GameMode::FAILED;
+                m_game_state = GameState::FAILED;
                 printf(
                     "Failed!\n"
                     "Score: %d\n"
@@ -814,7 +814,7 @@ class GameManager {
                 m_ball.set_dest();
             }
             m_ball.update_juggle();
-        } else if (m_game_mode == GameMode::FAILED) {
+        } else if (m_game_state == GameState::FAILED) {
             m_ball.draw_during_game();
             m_red_tile.set_pos_number(m_ball.get_next_pos_idx());
             m_red_tile.draw();
@@ -822,12 +822,12 @@ class GameManager {
     }
 
     void keyboard_event(GLFWwindow* window, int key, int scancode, int action, int mods) {
-        if (action == GLFW_PRESS && m_game_mode == GameMode::JUGGLING) {
+        if (action == GLFW_PRESS && m_game_state == GameState::JUGGLING) {
             m_tile.set_pos_number_by_key(key);
         }
         if (action == GLFW_PRESS && (char)key == ' '
-            && (m_game_mode == GameMode::BEFORE_START || m_game_mode == GameMode::FAILED)) {
-            m_game_mode = GameMode::FALLING;
+            && (m_game_state == GameState::BEFORE_START || m_game_state == GameState::FAILED)) {
+            m_game_state = GameState::FALLING;
             reset();
         }
     }
@@ -850,7 +850,7 @@ class GameManager {
     }
 
    private:
-    GameMode m_game_mode;
+    GameState m_game_state;
 
     Ball m_ball;
     Grid m_grid;
