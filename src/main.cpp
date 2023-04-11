@@ -777,9 +777,6 @@ class GameManager {
         : m_game_mode(GameMode::BEFORE_START), m_tile(WHITE), m_red_tile(RED), m_count(0) {}
 
     void init() {
-        glEnable(GL_DEPTH_TEST);
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
         m_ball.init();
         m_grid.init();
         m_ground.init();
@@ -935,6 +932,8 @@ int main(int argc, char** argv) {
     }
 
     glfwSetWindowSizeCallback(window, resize_gl);
+    glEnable(GL_DEPTH_TEST);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     g_game.init();
 
