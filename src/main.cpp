@@ -809,11 +809,13 @@ class GameManager {
                     "Score: %d\n"
                     "Press space to restart.\n\n",
                     m_count);
-            } else if (m_ball.is_fallen()) {
-                printf("%d\n", ++m_count);
-                m_ball.set_dest();
+            } else {
+                if (m_ball.is_fallen()) {
+                    printf("%d\n", ++m_count);
+                    m_ball.set_dest();
+                }
+                m_ball.update_juggle();
             }
-            m_ball.update_juggle();
         } else if (m_game_state == GameState::FAILED) {
             m_ball.draw_during_game();
             m_red_tile.set_pos_number(m_ball.get_next_pos_idx());
